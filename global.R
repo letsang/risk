@@ -10,7 +10,7 @@ library(httr)
 
   ############################## MAP DATA ##############################
 
-countries <- read.csv(file = "/Users/jacquestsang/Desktop/risk/dataset/countries.csv", stringsAsFactors = FALSE, na.strings = "N/A")
+countries <- read.csv(file = "dataset/countries.csv", stringsAsFactors = FALSE, na.strings = "N/A")
 regions <- merge(spData::world, countries, by = "iso_a2", full = TRUE) %>%
            select(id = iso_a2, continent, region = region_un, subregion, name = name_long, latitude, longitude, geometry) %>%
            group_by(subregion)
@@ -21,6 +21,6 @@ game <- regions %>%
 
   ############################## MARKER ICON ##############################
 
-flagIcon <- iconList(p1 = makeIcon("https://i.ibb.co/4PkPRj8/flag1.png", iconWidth = 24, iconHeight =32),
-                     p2 = makeIcon("https://i.ibb.co/ch2djLN/flag2.png", iconWidth = 24, iconHeight =32),
-                     p3 = makeIcon("https://i.ibb.co/Bjs7D9t/flag3.png", iconWidth = 24, iconHeight =32))
+flagIcon <- iconList(p1 = makeIcon("https://raw.githubusercontent.com/letsang/risk/master/graphics/flag1.png", iconWidth = 24, iconHeight =32),
+                     p2 = makeIcon("https://raw.githubusercontent.com/letsang/risk/master/graphics/flag2.png", iconWidth = 24, iconHeight =32),
+                     p3 = makeIcon("https://raw.githubusercontent.com/letsang/risk/master/graphics/flag3.png", iconWidth = 24, iconHeight =32))
