@@ -54,7 +54,7 @@ server <- function(input, output){
                                                           "border-color" = "black")
                  )
       ) %>%
-      addControl(html = img(src = "https://raw.githubusercontent.com/letsang/risk/master/logorisk.png", height = "16px"),
+      addControl(html = img(src = "https://raw.githubusercontent.com/letsang/risk/master/graphics/logorisk.png", height = "16px"),
                  position = "bottomleft")
   })
 }
