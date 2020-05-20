@@ -10,6 +10,7 @@ library(googlesheets4)
 
   ############################## CONNECT TO GOOGLESHEET ##############################
 
+ss <- "https://docs.google.com/spreadsheets/d/1EUyrdDC3_KAwlsa_jUTq9YWeRIJoCcA2dNHR3S3dbHw/edit?usp=sharing"
 authModal <- modalDialog(
   title = "Si vis pacem, para bellum",
   textInput("nickname","What is your name ?"),

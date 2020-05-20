@@ -16,24 +16,27 @@ ui <- bootstrapPage(
                 actionButton("exit", label = "Quit Game"),
                 br(),
                 br(),
-  )
+  ),
+  uiOutput("markers")
 )
 
-server <- function(input, output){
+server <- function(input, output, session){
   output$map <- renderLeaflet(map)
   observeEvent(input$exit,{
     stopApp()
   })
+  
   ############################## CONNECT TO GOOGLESHEET ##############################
   showModal(authModal)
   observeEvent(input$run,{
     gs4_token()
-    ss <- "https://docs.google.com/spreadsheets/d/1EUyrdDC3_KAwlsa_jUTq9YWeRIJoCcA2dNHR3S3dbHw/edit?usp=sharing"
-    dat <- read_sheet(ss,1)
-    player <- read_sheet(ss,2)
-    if (length(player$player) > 2){
+    player <- read_sheet(ss, "player")
+    if (length(player$player) > 2) # limit to 3 players atm
+    {
       showModal(quitModal)
-    }else{
+    }
+    else
+    {
       removeModal()
       sheet_append(ss, data.frame(input$nickname, 20), "player")
     }
@@ -48,21 +51,46 @@ server <- function(input, output){
     stopApp()
   })
   
-  ############################## INIT TROOPS ##############################
-  observeEvent(input$init, {
-    dat <- read_sheet(ss, 1) %>% filter(occupied == FALSE)
-    player <- read_sheet(ss, 2)
-    showModal(modalDialog(
-      selectInput("init_region", "Where would you send your regiment ?", choices = dat$subregion),
-      numericInput("init_regiment", "How many regiment ?", value = min(player$regiment, min = min(player$regiment), max = max(player$regiment))),
-      actionButton("exe_init", "Execute")
-    ))
+  ############################## UPDATE MARKERS ##############################
+  # * Quota exceeded for quota group 'ReadGroup' and limit 'Read requests per user per 100 seconds' of service 'sheets.googleapis.com' for consumer 'project_number:603366585132'.
+  dat <- reactive({
+    invalidateLater(3000)
+    tmp <- read_sheet(ss)
+    as.data.table(tmp)
   })
+  markers <- reactive({
+  leafletProxy("map") %>% clearMarkers() %>%
+    addMarkers(data = dat(),
+               icon = flagIcon["p2"],
+               label = ~as.character(regiment),
+               labelOptions = labelOptions(noHide = TRUE, direction = "bottom",
+                                           style = list("color" = "black",
+                                                        "font-family" = "serif",
+                                                        "font-style" = "italic",
+                                                        "font-size" = "15px",
+                                                        "height" = "25px",
+                                                        "width" = "25px",
+                                                        "border-color" = "black")
+               )
+    )
+  })
+  output$markers <- renderUI(markers())
   
-  observeEvent(input$exe_init, {
-    removeModal()
-    range_write(ss, data = data.frame(input$init_regiment), range = "F9", col_names = FALSE)
-  })
+  ############################## INIT TROOPS ##############################
+  # observeEvent(input$init, {
+  #   dat <- read_sheet(ss, 1) %>% filter(occupied == FALSE)
+  #   player <- read_sheet(ss, 2)
+  #   showModal(modalDialog(
+  #     selectInput("init_region", "Where would you send your regiment ?", choices = dat$subregion),
+  #     numericInput("init_regiment", "How many regiment ?", value = min(player$regiment, min = min(player$regiment), max = max(player$regiment))),
+  #     actionButton("exe_init", "Execute")
+  #   ))
+  # })
+  # 
+  # observeEvent(input$exe_init, {
+  #   removeModal()
+  #   range_write(ss, data = data.frame(input$init_regiment), range = "F9", col_names = FALSE)
+  # })
   
   ############################## MOVE TROOPS ##############################
   # observeEvent(input$move, {
@@ -80,24 +108,6 @@ server <- function(input, output){
   #   range_write(ss, data = data.frame(input$move_regiment), range = "F9", col_names = FALSE)
   # })
 
-  ############################## UPDATE MARKERS ##############################
-  observeEvent(input$map_shape_click, {
-    dat <- read_sheet(ss)
-    leafletProxy("map") %>% clearMarkers() %>%
-      addMarkers(data = as.data.table(dat),
-                 icon = flagIcon["p2"],
-                 label = ~as.character(regiment),
-                 labelOptions = labelOptions(noHide = TRUE, direction = "bottom",
-                                             style = list("color" = "black",
-                                                          "font-family" = "serif",
-                                                          "font-style" = "italic",
-                                                          "font-size" = "15px",
-                                                          "height" = "25px",
-                                                          "width" = "25px",
-                                                          "border-color" = "black")
-                 )
-      )
-  })
 }
 
 shinyApp(ui, server)
