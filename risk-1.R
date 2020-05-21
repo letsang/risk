@@ -61,7 +61,7 @@ server <- function(input, output, session){
   markers <- reactive({
   leafletProxy("map") %>% clearMarkers() %>%
     addMarkers(data = dat(),
-               icon = flagIcon["p2"],
+               icon = ~flagIcon[player],
                label = ~as.character(regiment),
                labelOptions = labelOptions(noHide = TRUE, direction = "bottom",
                                            style = list("color" = "black",

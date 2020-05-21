@@ -51,6 +51,7 @@ map <- leaflet() %>%
 
   ############################## MARKER ICON ##############################
 
-flagIcon <- iconList(p1 = makeIcon("https://raw.githubusercontent.com/letsang/risk/master/graphics/flag1.png", iconWidth = 24, iconHeight =32),
+flagIcon <- iconList(null = makeIcon("https://raw.githubusercontent.com/letsang/risk/master/graphics/null.png", iconWidth = 24, iconHeight =32),
+                     p1 = makeIcon("https://raw.githubusercontent.com/letsang/risk/master/graphics/flag1.png", iconWidth = 24, iconHeight =32),
                      p2 = makeIcon("https://raw.githubusercontent.com/letsang/risk/master/graphics/flag2.png", iconWidth = 24, iconHeight =32),
                      p3 = makeIcon("https://raw.githubusercontent.com/letsang/risk/master/graphics/flag3.png", iconWidth = 24, iconHeight =32))
