@@ -31,14 +31,21 @@ server <- function(input, output, session){
   observeEvent(input$run,{
     gs4_token()
     player <- read_sheet(ss, "player")
-    if (length(player$player) > 2) # limit to 3 players atm
+    if (length(player$player) > 2) # limited to 3 players
     {
       showModal(quitModal)
     }
     else
     {
       removeModal()
-      sheet_append(ss, data.frame(input$nickname, 20), "player")
+      # initialize the player in googlesheets
+      sheet_append(ss, data.frame(input$nickname, 20,
+                                  0, 0, 0, 0, 0,
+                                  0, 0, 0, 0, 0,
+                                  0, 0, 0, 0, 0,
+                                  0, 0, 0, 0, 0,
+                                  0, 0, paste("p", length(player$player)+1, sep = ""))
+                   ,"player")
     }
   })
   output$nickname <- renderText({
