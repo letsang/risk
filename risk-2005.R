@@ -11,7 +11,6 @@ ui <- bootstrapPage(
                 br(),
                 actionButton("init", label = "Initiate"),
                 # actionButton("attack", label = "Attack"),
-                # actionButton("move", label = "Move"),
                 # actionButton("pass", label = "Next"),
                 actionButton("exit", label = "Quit Game"),
                 br(),
@@ -25,7 +24,10 @@ server <- function(input, output, session){
   observeEvent(input$exit,{ #exit the game properly
     stopApp()
   })
-  
+  rv <- reactiveValues( #reactive value to be used as global variable
+    playerID = character()
+  )
+
   ############################## CONNECT TO GOOGLESHEET ##############################
   showModal(authModal)
   observeEvent(input$run,{
@@ -47,6 +49,7 @@ server <- function(input, output, session){
                                   0, 0, paste("p", length(player$player)+1, sep = "")
                                   ),
                    "player")
+      rv$playerID <- paste("p", length(player$player)+1, sep = "") #assigning player id to the reactive value
     }
   })
   output$nickname <- renderText({
@@ -95,7 +98,7 @@ server <- function(input, output, session){
       actionButton("plus","+"),
       easyClose = TRUE
     )
-    if (dat$occupied == FALSE) # OR dat$player == ACTUAL PLAYER
+    if (dat$occupied == FALSE | dat$player == rv$playerID) # OR dat$player == ACTUAL PLAYER
     {
       showModal(initModal)
     }
@@ -116,23 +119,6 @@ server <- function(input, output, session){
   #   removeModal()
   #   range_write(ss, data = data.frame(input$init_regiment), range = "F9", col_names = FALSE)
   # })
-  
-  ############################## MOVE TROOPS ##############################
-  # observeEvent(input$move, {
-  #   dat <- read_sheet(ss)
-  #   showModal(modalDialog(
-  #     selectInput("move_from", "From", choices = dat$subregion),
-  #     selectInput("move_to", "to", choices = dat$subregion),
-  #     numericInput("move_regiment", "move", value = 1, min = 1, max = 2),
-  #     actionButton("exe_move", "Execute")
-  #   ))
-  # })
-  # 
-  # observeEvent(input$exe_move, {
-  #   removeModal()
-  #   range_write(ss, data = data.frame(input$move_regiment), range = "F9", col_names = FALSE)
-  # })
-
 }
 
 shinyApp(ui, server)
