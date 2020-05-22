@@ -41,15 +41,16 @@ server <- function(input, output, session){
     {
       removeModal()
       # initialize the player in googlesheets
+      rv$playerID <- paste("p", length(player$player)+1, sep = "") #assigning player id to the reactive value
       sheet_append(ss, data.frame(input$nickname, 20,
                                   0, 0, 0, 0, 0,
                                   0, 0, 0, 0, 0,
                                   0, 0, 0, 0, 0,
                                   0, 0, 0, 0, 0,
-                                  0, 0, paste("p", length(player$player)+1, sep = "")
+                                  0, 0, rv$playerID
                                   ),
                    "player")
-      rv$playerID <- paste("p", length(player$player)+1, sep = "") #assigning player id to the reactive value
+      
     }
   })
   output$nickname <- renderText({
@@ -90,35 +91,25 @@ server <- function(input, output, session){
   ############################## MOOVING TROOPS ##############################
   observeEvent(input$map_shape_click,{
     dat <- dat() %>% filter(subregion == input$map_shape_click$id)
-    initModal <- modalDialog(
-      size = "s",
-      title = input$map_shape_click$id,
-      actionButton("minus","-"),
-      dat$regiment,
-      actionButton("plus","+"),
-      easyClose = TRUE
-    )
+    player <- read_sheet(ss, "player")
+    moveModal <- modalDialog(size = "s",
+                             title = input$map_shape_click$id,
+                             numericInput("retreat", "Retreat - :", width = "100px", value = 0, min = 0, max = ifelse(dat$regiment > 0, max(dat$regiment) - 1, max(dat$regiment))),
+                             numericInput("charge", "Charge + :", width = "100px", value = 0, min = 0, max = max(player$regiment)),
+                             footer = actionButton("move","Move"),
+                             easyClose = TRUE)
     if (dat$occupied == FALSE | dat$player == rv$playerID) # OR dat$player == ACTUAL PLAYER
     {
-      showModal(initModal)
+      showModal(moveModal)
     }
   })
   
-  
-  # observeEvent(input$init, {
-  #   dat <- read_sheet(ss, 1) %>% filter(occupied == FALSE)
-  #   player <- read_sheet(ss, 2)
-  #   showModal(modalDialog(
-  #     selectInput("init_region", "Where would you send your regiment ?", choices = dat$subregion),
-  #     numericInput("init_regiment", "How many regiment ?", value = min(player$regiment, min = min(player$regiment), max = max(player$regiment))),
-  #     actionButton("exe_init", "Execute")
-  #   ))
-  # })
-  # 
-  # observeEvent(input$exe_init, {
-  #   removeModal()
-  #   range_write(ss, data = data.frame(input$init_regiment), range = "F9", col_names = FALSE)
-  # })
+  observeEvent(input$move,{
+    player <- read_sheet(ss, "player")
+    player[player$id == rv$playerID, input$map_shape_click$id] <- player[player$id == rv$playerID, input$map_shape_click$id] - input$retreat + input$charge
+    player[player$id == rv$playerID, "regiment"] <- player[player$id == rv$playerID, "regiment"] - input$charge + input$retreat
+    write_sheet(player, ss, "player")
+  })
 }
 
 shinyApp(ui, server)

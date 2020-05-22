@@ -13,7 +13,8 @@ library(googlesheets4)
 ss <- "https://docs.google.com/spreadsheets/d/1EUyrdDC3_KAwlsa_jUTq9YWeRIJoCcA2dNHR3S3dbHw/edit?usp=sharing"
 authModal <- modalDialog(
   title = "Si vis pacem, para bellum",
-  textInput("nickname","What is your name ?"),
+  textInput("nickname","Enter your name :"),
+  # textInput("email","Enter your email :"),
   footer = tagList(actionButton("run", "Run"), actionButton("quit", "Quit"))
 )
 quitModal <- modalDialog(
