@@ -37,7 +37,7 @@ map <- leaflet() %>%
                                                                            "font-family" = "serif",
                                                                            "font-style" = "italic",
                                                                            "font-size" = "15px")),
-              fillColor = "black", fillOpacity = 0.1,
+              fillColor = "black", fillOpacity = 0.1, layerId = ~subregion,
               highlightOptions = highlightOptions(fillColor = "white", bringToFront = TRUE)) %>%
   addControl(html = img(src = "https://raw.githubusercontent.com/letsang/risk/master/graphics/logorisk.png", height = "16px"),
              position = "bottomleft")

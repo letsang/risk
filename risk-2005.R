@@ -22,7 +22,7 @@ ui <- bootstrapPage(
 
 server <- function(input, output, session){
   output$map <- renderLeaflet(map)
-  observeEvent(input$exit,{
+  observeEvent(input$exit,{ #exit the game properly
     stopApp()
   })
   
@@ -44,8 +44,9 @@ server <- function(input, output, session){
                                   0, 0, 0, 0, 0,
                                   0, 0, 0, 0, 0,
                                   0, 0, 0, 0, 0,
-                                  0, 0, paste("p", length(player$player)+1, sep = ""))
-                   ,"player")
+                                  0, 0, paste("p", length(player$player)+1, sep = "")
+                                  ),
+                   "player")
     }
   })
   output$nickname <- renderText({
@@ -83,7 +84,24 @@ server <- function(input, output, session){
   })
   output$markers <- renderUI(markers())
   
-  ############################## INIT TROOPS ##############################
+  ############################## MOOVING TROOPS ##############################
+  observeEvent(input$map_shape_click,{
+    dat <- dat() %>% filter(subregion == input$map_shape_click$id)
+    initModal <- modalDialog(
+      size = "s",
+      title = input$map_shape_click$id,
+      actionButton("minus","-"),
+      dat$regiment,
+      actionButton("plus","+"),
+      easyClose = TRUE
+    )
+    if (dat$occupied == FALSE) # OR dat$player == ACTUAL PLAYER
+    {
+      showModal(initModal)
+    }
+  })
+  
+  
   # observeEvent(input$init, {
   #   dat <- read_sheet(ss, 1) %>% filter(occupied == FALSE)
   #   player <- read_sheet(ss, 2)
