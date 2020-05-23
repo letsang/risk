@@ -9,7 +9,7 @@ ui <- bootstrapPage(
                 h3(textOutput("nickname")),
                 h5("What is your next step ?"),
                 br(),
-                actionButton("init", label = "Initiate"),
+                # actionButton("init", label = "Initiate"),
                 # actionButton("attack", label = "Attack"),
                 # actionButton("pass", label = "Next"),
                 actionButton("exit", label = "Quit Game"),
@@ -106,8 +106,8 @@ server <- function(input, output, session){
   
   observeEvent(input$move,{
     player <- read_sheet(ss, "player")
-    player[player$id == rv$playerID, input$map_shape_click$id] <- player[player$id == rv$playerID, input$map_shape_click$id] - input$retreat + input$charge
-    player[player$id == rv$playerID, "regiment"] <- player[player$id == rv$playerID, "regiment"] - input$charge + input$retreat
+    player[player$id == rv$playerID, input$map_shape_click$id] <- player[player$id == rv$playerID, input$map_shape_click$id] + (input$charge - input$retreat)
+    player[player$id == rv$playerID, "regiment"] <- player[player$id == rv$playerID, "regiment"] - (input$charge - input$retreat)
     write_sheet(player, ss, "player")
   })
 }
