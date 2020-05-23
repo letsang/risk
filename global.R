@@ -6,6 +6,7 @@ library(shiny)
 library(leaflet)
 library(sf)
 library(httr)
+library(googledrive)
 library(googlesheets4)
 
   ############################## CONNECT TO GOOGLESHEET ##############################
@@ -22,6 +23,7 @@ quitModal <- modalDialog(
   img(src = "https://raw.githubusercontent.com/letsang/risk/master/graphics/busyModal.jpg", width = "100%"),
   footer = actionButton("close","Close")
 )
+
   ############################## GENERATE MAP ##############################
 
 countries <- read.csv(file = "dataset/countries.csv", stringsAsFactors = FALSE, na.strings = "N/A")

@@ -31,7 +31,7 @@ server <- function(input, output, session){
   ############################## CONNECT TO GOOGLESHEET ##############################
   showModal(authModal)
   observeEvent(input$run,{
-    gs4_token()
+    gs4_auth(cache = ".secrets", email = TRUE)
     player <- read_sheet(ss, "player")
     if (length(player$player) > 2) # limited to 3 players
     {
