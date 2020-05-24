@@ -21,9 +21,7 @@ ui <- bootstrapPage(
 
 server <- function(input, output, session){
   output$map <- renderLeaflet(map)
-  observeEvent(input$exit,{ #exit the game properly
-    stopApp()
-  })
+  
   rv <- reactiveValues( #reactive value to be used as global variable
     playerID = character()
   )
@@ -50,7 +48,6 @@ server <- function(input, output, session){
                                   0, 0, rv$playerID
                                   ),
                    "player")
-      
     }
   })
   output$nickname <- renderText({
@@ -109,6 +106,13 @@ server <- function(input, output, session){
     player[player$id == rv$playerID, input$map_shape_click$id] <- player[player$id == rv$playerID, input$map_shape_click$id] + (input$charge - input$retreat)
     player[player$id == rv$playerID, "regiment"] <- player[player$id == rv$playerID, "regiment"] - (input$charge - input$retreat)
     write_sheet(player, ss, "player")
+  })
+  
+  ############################## QUIT GAME ##############################
+  observeEvent(input$exit,{ #exit the game properly
+    player <- player[0, ]
+    write_sheet(player, ss, "player")
+    stopApp()
   })
 }
 
