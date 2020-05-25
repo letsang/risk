@@ -9,7 +9,6 @@ ui <- bootstrapPage(
                 h3(textOutput("nickname")),
                 h5("What is your next step ?"),
                 br(),
-                # actionButton("init", label = "Initiate"),
                 # actionButton("attack", label = "Attack"),
                 # actionButton("pass", label = "Next"),
                 actionButton("exit", label = "Quit Game"),
