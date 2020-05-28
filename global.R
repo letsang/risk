@@ -13,14 +13,16 @@ library(googlesheets4)
 
 ss <- "https://docs.google.com/spreadsheets/d/1EUyrdDC3_KAwlsa_jUTq9YWeRIJoCcA2dNHR3S3dbHw/edit?usp=sharing"
 authModal <- modalDialog(
+  size = "s",
   title = "Si vis pacem, para bellum",
   textInput("nickname","Enter your name :"),
   # textInput("email","Enter your email :"),
   footer = tagList(actionButton("run", "Run"), actionButton("quit", "Quit"))
 )
 quitModal <- modalDialog(
+  size = "s",
   title = "Sorry, too many players!",
-  img(src = "https://raw.githubusercontent.com/letsang/risk/master/graphics/busyModal.jpg", width = "100%"),
+  img(src = "https://i.ibb.co/93kLwdT/fa66d01db8cec8b2349cd2ab53f3a9f3.jpg", width = "100%"),
   footer = actionButton("close","Close")
 )
 
