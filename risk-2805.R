@@ -111,7 +111,7 @@ server <- function(input, output, session){
                                  selectInput("attackFrom", "Attack from : ", choices = attack$subregion[which(attack$subregion %in% unlist(attackList) & attack$regiment > 2)]),
                                  tags$i("Rule : You need at least 3 regiments on your territory to attack."),
                                  selectInput("attackNbRegiment", "Send regiments : ", choices = c(1:3), selectize = FALSE, size = 3),
-                                 tags$img(src = "https://i.ibb.co/XWGnSHY/before-Charge.jpg", width = "100%"),
+                                 tags$img(src = "https://raw.githubusercontent.com/letsang/risk/master/graphics/beforeCharge.jpg", width = "100%"),
                                  tags$i("Rule : You cannot attack with more than 3 regiments."),
                                  footer = actionButton("attack","Attack"),
                                  easyClose = TRUE)

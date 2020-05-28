@@ -22,7 +22,7 @@ authModal <- modalDialog(
 quitModal <- modalDialog(
   size = "s",
   title = "Sorry, too many players!",
-  img(src = "https://i.ibb.co/93kLwdT/fa66d01db8cec8b2349cd2ab53f3a9f3.jpg", width = "100%"),
+  img(src = "https://raw.githubusercontent.com/letsang/risk/master/graphics/busyQuit.jpg", width = "100%"),
   footer = actionButton("close","Close")
 )
 
