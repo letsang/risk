@@ -60,3 +60,27 @@ flagIcon <- iconList(null = makeIcon("https://raw.githubusercontent.com/letsang/
                      p1 = makeIcon("https://raw.githubusercontent.com/letsang/risk/master/graphics/flag1.png", iconWidth = 24, iconHeight =32),
                      p2 = makeIcon("https://raw.githubusercontent.com/letsang/risk/master/graphics/flag2.png", iconWidth = 24, iconHeight =32),
                      p3 = makeIcon("https://raw.githubusercontent.com/letsang/risk/master/graphics/flag3.png", iconWidth = 24, iconHeight =32))
+
+  ############################## LANDSCAPE ILLUSTRATIONS ##############################
+# landImg <- list("Antarctica" = ,
+#                 "Australia and New Zealand" = ,
+#                 "Caribbean" = ,
+#                 "Central America" = ,
+#                 "Central Asia" = ,
+#                 "Eastern Africa" = ,
+#                 "Eastern Asia" = ,
+#                 "Eastern Europe" = ,
+#                 "Melanesia" = ,
+#                 "Middle Africa" = ,
+#                 "Northern Africa" = ,
+#                 "Northern America" = ,
+#                 "Northern Europe" = ,
+#                 "Seven seas (open ocean)" = ,
+#                 "South America" = ,
+#                 "South-Eastern Asia" = ,
+#                 "Southern Africa" = ,
+#                 "Southern Asia" = ,
+#                 "Southern Europe" = ,
+#                 "Western Africa" = ,
+#                 "Western Asia" = ,
+#                 "Western Europe" = )

@@ -98,8 +98,11 @@ server <- function(input, output, session){
     {
       moveModal <- modalDialog(size = "s",
                                title = input$map_shape_click$id,
+                               tags$img(src = "https://raw.githubusercontent.com/letsang/risk/master/graphics/landscape.jpg", width = "100%"),
+                               tags$i(paste("Rule : This territory is free, place your regiments to make it yours.")),
                                numericInput("retreat", "Retreat - :", width = "100px", value = 0, min = 0, max = ifelse(mov$regiment > 0, max(mov$regiment) - 1, max(mov$regiment))),
                                numericInput("charge", "Charge + :", width = "100px", value = 0, min = 0, max = max(player$regiment)),
+                               tags$i(paste("Remaining regiments : ", player$regiment[player$id == rv$playerID])),
                                footer = actionButton("move","Move"),
                                easyClose = TRUE)
       showModal(moveModal)
