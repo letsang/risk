@@ -84,19 +84,35 @@ server <- function(input, output, session){
   })
   output$markers <- renderUI(markers())
   
-  ############################## MOOVING TROOPS ##############################
+  ############################## MOOVING TROOPS AND/OR ATTACK ##############################
   observeEvent(input$map_shape_click,{
-    dat <- dat() %>% filter(subregion == input$map_shape_click$id)
+    dat <- dat()
+    # for moving troops
+    mov <- dat %>% filter(subregion == input$map_shape_click$id)
     player <- read_sheet(ss, "player")
-    moveModal <- modalDialog(size = "s",
-                             title = input$map_shape_click$id,
-                             numericInput("retreat", "Retreat - :", width = "100px", value = 0, min = 0, max = ifelse(dat$regiment > 0, max(dat$regiment) - 1, max(dat$regiment))),
-                             numericInput("charge", "Charge + :", width = "100px", value = 0, min = 0, max = max(player$regiment)),
-                             footer = actionButton("move","Move"),
-                             easyClose = TRUE)
-    if (dat$occupied == FALSE | dat$player == rv$playerID) # OR dat$player == ACTUAL PLAYER
+    # for attack move
+    attackList <- read_sheet(ss, "attack") %>% select(input$map_shape_click$id)
+    attack <- dat %>% filter(player == rv$playerID)
+    
+    if (mov$occupied == FALSE | mov$player == rv$playerID) # OR mov$player == ACTUAL PLAYER
     {
+      moveModal <- modalDialog(size = "s",
+                               title = input$map_shape_click$id,
+                               numericInput("retreat", "Retreat - :", width = "100px", value = 0, min = 0, max = ifelse(mov$regiment > 0, max(mov$regiment) - 1, max(mov$regiment))),
+                               numericInput("charge", "Charge + :", width = "100px", value = 0, min = 0, max = max(player$regiment)),
+                               footer = actionButton("move","Move"),
+                               easyClose = TRUE)
       showModal(moveModal)
+    }
+    else if (mov$occupied == TRUE & mov$player != rv$playerID & any(attack$subregion %in% unlist(attackList)))
+    {
+      attackModal <- modalDialog(size = "s",
+                                 title = paste("Enemy : ", input$map_shape_click$id),
+                                 selectInput("attackFrom", "Attack from : ", choices = attack$subregion[which(attack$subregion %in% unlist(attackList) & attack$regiment > 2)]),
+                                 selectInput("attackNbRegiment", "Send regiments : ", choices = c(1:3)),
+                                 footer = actionButton("attack","Attack"),
+                                 easyClose = TRUE)
+      showModal(attackModal)
     }
   })
   
@@ -105,10 +121,17 @@ server <- function(input, output, session){
     player[player$id == rv$playerID, input$map_shape_click$id] <- player[player$id == rv$playerID, input$map_shape_click$id] + (input$charge - input$retreat)
     player[player$id == rv$playerID, "regiment"] <- player[player$id == rv$playerID, "regiment"] - (input$charge - input$retreat)
     write_sheet(player, ss, "player")
+    removeModal()
+  })
+  
+  ############################## ATTACK PHASE ##############################
+  observeEvent(input$attack,{
+    removeModal()
   })
   
   ############################## QUIT GAME ##############################
   observeEvent(input$exit,{ #exit the game properly
+    player <- read_sheet(ss, "player")
     player <- player[0, ]
     write_sheet(player, ss, "player")
     stopApp()
