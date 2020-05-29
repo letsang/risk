@@ -83,7 +83,7 @@ server <- function(input, output, session){
                                               )
                   ) %>%
         addMarkers(data = data[which(data$attacked == TRUE)],
-                   icon = makeIcon(iconUrl = "https://raw.githubusercontent.com/letsang/risk/master/graphics/dices.gif"),
+                   icon = makeIcon(iconUrl = "https://raw.githubusercontent.com/letsang/risk/master/graphics/dicesred.gif"),
                    options = markerOptions(clickable = TRUE)
         )
   })
