@@ -67,20 +67,25 @@ server <- function(input, output, session){
     as.data.table(tmp)
   })
   markers <- reactive({
-  leafletProxy("map") %>% clearMarkers() %>%
-    addMarkers(data = dat(),
-               icon = ~flagIcon[player],
-               label = ~as.character(regiment),
-               labelOptions = labelOptions(noHide = TRUE, direction = "bottom",
-                                           style = list("color" = "black",
-                                                        "font-family" = "serif",
-                                                        "font-style" = "italic",
-                                                        "font-size" = "15px",
-                                                        "height" = "25px",
-                                                        "width" = "25px",
-                                                        "border-color" = "black")
-               )
-    )
+    data <- dat()
+      leafletProxy("map") %>% clearMarkers() %>%
+        addMarkers(data = data,
+                  icon = ~flagIcon[player],
+                  label = ~as.character(regiment),
+                  labelOptions = labelOptions(noHide = TRUE, direction = "bottom",
+                                              style = list("color" = "black",
+                                                           "font-family" = "serif",
+                                                           "font-style" = "italic",
+                                                           "font-size" = "15px",
+                                                           "height" = "25px",
+                                                           "width" = "25px",
+                                                           "border-color" = "black")
+                                              )
+                  ) %>%
+        addMarkers(data = data[which(data$attacked == TRUE)],
+                   icon = makeIcon(iconUrl = "https://raw.githubusercontent.com/letsang/risk/master/graphics/dices.gif"),
+                   options = markerOptions(clickable = TRUE)
+        )
   })
   output$markers <- renderUI(markers())
   
