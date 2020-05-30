@@ -83,7 +83,7 @@ server <- function(input, output, session){
                                               )
                   ) %>%
         addMarkers(data = data[which(data$attacked == TRUE)],
-                   icon = makeIcon(iconUrl = "https://raw.githubusercontent.com/letsang/risk/master/graphics/dicesred.gif"),
+                   icon = makeIcon(iconUrl = "https://raw.githubusercontent.com/letsang/risk/master/graphics/dicesred.gif", iconAnchorX = 20, iconAnchorY = 60),
                    options = markerOptions(clickable = TRUE)
         )
   })
@@ -99,7 +99,7 @@ server <- function(input, output, session){
     attackList <- read_sheet(ss, "attack") %>% select(input$map_shape_click$id)
     attack <- dat %>% filter(player == rv$playerID)
     
-    if (mov$occupied == FALSE | mov$player == rv$playerID) # OR mov$player == ACTUAL PLAYER
+    if ((mov$occupied == FALSE | mov$player == rv$playerID) & mov$attacked == FALSE) # OR mov$player == ACTUAL PLAYER
     {
       moveModal <- modalDialog(size = "s",
                                title = input$map_shape_click$id,
@@ -112,7 +112,7 @@ server <- function(input, output, session){
                                easyClose = TRUE)
       showModal(moveModal)
     }
-    else if (mov$occupied == TRUE & mov$player != rv$playerID & any(attack$subregion %in% unlist(attackList)))
+    else if (mov$occupied == TRUE & mov$attacked == FALSE & mov$player != rv$playerID & any(attack$subregion %in% unlist(attackList)))
     {
       attackModal <- modalDialog(size = "s",
                                  title = paste("Enemy : ", input$map_shape_click$id),
@@ -138,6 +138,11 @@ server <- function(input, output, session){
   ############################## ATTACK PHASE ##############################
   observeEvent(input$attack,{
     removeModal()
+    data <- read_sheet(ss)
+    data[data$subregion == input$map_shape_click$id, "attacked"] <- TRUE
+    data[data$subregion == input$map_shape_click$id, "oponent"] <- input$attackNbRegiment
+    sort(sample(c(1:6), input$attackNbRegiment, replace = TRUE), decreasing = TRUE)
+    range_write(ss, data[, 7:10], "game", range = "G1:J23")
   })
   
   ############################## QUIT GAME ##############################
