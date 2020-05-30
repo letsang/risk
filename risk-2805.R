@@ -141,15 +141,29 @@ server <- function(input, output, session){
     data <- read_sheet(ss)
     data[data$subregion == input$map_shape_click$id, "attacked"] <- TRUE
     data[data$subregion == input$map_shape_click$id, "oponent"] <- input$attackNbRegiment
-    sort(sample(c(1:6), input$attackNbRegiment, replace = TRUE), decreasing = TRUE)
-    range_write(ss, data[, 7:10], "game", range = "G1:J23")
+    data[data$subregion == input$map_shape_click$id, "from"] <- input$attackFrom
+    range_write(ss, data[, 7:11], "game", range = "G1:K23")
+    
+    player <- read_sheet(ss, "player")
+    player[player$id == rv$playerID, input$attackFrom] <- player[player$id == rv$playerID, input$attackFrom] - as.numeric(input$attackNbRegiment)
+    write_sheet(player, ss, "player")
   })
+
+  #   sort(sample(c(1:6), input$attackNbRegiment, replace = TRUE), decreasing = TRUE)
   
   ############################## QUIT GAME ##############################
-  observeEvent(input$exit,{ #exit the game properly
+  observeEvent(input$exit,{ #exit the game
     player <- read_sheet(ss, "player")
     player <- player[0, ]
     write_sheet(player, ss, "player")
+    
+    data <- read_sheet(ss)
+    data[, "attacked"] <- FALSE
+    data[, "oponent"] <- 0
+    data[, "from"] <- ""
+    data[, "defended"] <- FALSE
+    data[, "defender"] <- 0
+    range_write(ss, data[, 7:11], "game", range = "G1:K23")
     stopApp()
   })
 }
