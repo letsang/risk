@@ -161,11 +161,11 @@ server <- function(input, output, session){
 
   #   sort(sample(c(1:6), input$attackNbRegiment, replace = TRUE), decreasing = TRUE)
   observeEvent(input$map_marker_click,{
-    data <- read_sheet(ss)
-    if (input$map_marker_click$group == "attackFlag" & (rv$playerID %in% data$player) & data[data$subregion == input$map_shape_click$id, "player"] == rv$playerID)
+    data <- dat()
+    if (input$map_marker_click$group == "attackFlag" & (rv$playerID %in% data$player) & data[data$latitude == input$map_marker_click$lat, "player"] == rv$playerID)
     {
       alertAttack <- modalDialog(size = "s",
-                                 title = input$map_shape_click$id,
+                                 title = data[data$latitude == input$map_marker_click$lat, "subregion"],
                                  tags$img(src = "https://raw.githubusercontent.com/letsang/risk/master/graphics/defend.jpg", width = "100%"),
                                  footer = actionButton("defend","Defend"),
                                  easyClose = TRUE)
