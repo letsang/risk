@@ -143,7 +143,7 @@ server <- function(input, output, session){
     data[data$subregion == input$map_shape_click$id, "attacked"] <- TRUE
     data[data$subregion == input$map_shape_click$id, "oponent"] <- input$attackNbRegiment
     data[data$subregion == input$map_shape_click$id, "from"] <- input$attackFrom
-    range_write(ss, data[, 7:11], "game", range = "G1:K23")
+    range_write(ss, data[, 7:9], "game", range = "G1:I23")
     
     player <- read_sheet(ss, "player")
     player[player$id == rv$playerID, input$attackFrom] <- player[player$id == rv$playerID, input$attackFrom] - as.numeric(input$attackNbRegiment)
@@ -159,7 +159,6 @@ server <- function(input, output, session){
     showModal(attackModal2)
   })
 
-  #   sort(sample(c(1:6), input$attackNbRegiment, replace = TRUE), decreasing = TRUE)
   observeEvent(input$map_marker_click,{
     data <- dat()
     if (input$map_marker_click$group == "attackFlag" & (rv$playerID %in% data$player) & data[data$latitude == input$map_marker_click$lat, "player"] == rv$playerID)
@@ -174,6 +173,16 @@ server <- function(input, output, session){
                                  easyClose = TRUE)
       showModal(alertAttack)
     }
+  })
+  
+  ############################## DEFENSE PHASE ##############################
+  #   sort(sample(c(1:6), input$attackNbRegiment, replace = TRUE), decreasing = TRUE)
+  observeEvent(input$defend,{
+    data <- read_sheet(ss)
+    data[data$latitude == input$map_marker_click$lat, "defended"] <- TRUE
+    data[data$latitude == input$map_marker_click$lat, "defender"] <- input$defendNbRegiment
+    range_write(ss, data[, 10:11], "game", range = "J1:K23")
+    removeModal()
   })
   
   ############################## QUIT GAME ##############################
