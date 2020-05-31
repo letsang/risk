@@ -166,7 +166,10 @@ server <- function(input, output, session){
     {
       alertAttack <- modalDialog(size = "s",
                                  title = data[data$latitude == input$map_marker_click$lat, "subregion"],
+                                 tags$i("Rule : Your territory has been attacked ! Fight the enemies with 1 or 2 regiment(s)."),
                                  tags$img(src = "https://raw.githubusercontent.com/letsang/risk/master/graphics/defend.jpg", width = "100%"),
+                                 selectInput("defendNbRegiment", "Send regiments : ", choices = c(1:ifelse(data[data$latitude == input$map_marker_click$lat, "regiment"] > 1, 2, 1)), selectize = FALSE, size = 2),
+                                 tags$i("Hint : The more dice the defender rolls, the higher his or her odds of winning."),
                                  footer = actionButton("defend","Defend"),
                                  easyClose = TRUE)
       showModal(alertAttack)
