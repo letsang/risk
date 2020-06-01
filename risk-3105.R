@@ -9,13 +9,13 @@ ui <- bootstrapPage(
                 h3(textOutput("nickname")),
                 h5("What is your next step ?"),
                 br(),
-                # actionButton("attack", label = "Attack"),
                 # actionButton("pass", label = "Next"),
                 actionButton("exit", label = "Quit Game"),
                 br(),
                 br(),
   ),
-  uiOutput("markers")
+  uiOutput("markers"),
+  uiOutput("battle")
 )
 
 server <- function(input, output, session){
@@ -176,13 +176,23 @@ server <- function(input, output, session){
   })
   
   ############################## DEFENSE PHASE ##############################
-  #   sort(sample(c(1:6), input$attackNbRegiment, replace = TRUE), decreasing = TRUE)
   observeEvent(input$defend,{
     data <- read_sheet(ss)
     data[data$latitude == input$map_marker_click$lat, "defended"] <- TRUE
     data[data$latitude == input$map_marker_click$lat, "defender"] <- input$defendNbRegiment
     range_write(ss, data[, 10:11], "game", range = "J1:K23")
     removeModal()
+    output$battle <- renderUI(
+      # data <- read_sheet(ss),
+      # oponent <- sort(sample(c(1:6), unlist(data[data$latitude == input$map_marker_click$lat, "oponent"]), replace = TRUE), decreasing = TRUE),
+      # defender <- sort(sample(c(1:6), unlist(data[data$latitude == input$map_marker_click$lat, "defender"]), replace = TRUE), decreasing = TRUE),
+      modalDialog(size = "m",
+                  title = paste("Battle : ", data[data$latitude == input$map_marker_click$lat, "subregion"]),
+                  tags$i("Rule : Attacker and defender rolled dice. To decide a battle, compare the highest die each of them rolled. If the  attacker’s  is  higher,  the  defender  loses  one  army  from  the  territory under  attack.  But  if  the  defender’s  die  is  higher  than  attacker's,  the defender  lose  one army."),
+                  tags$img(src = "https://raw.githubusercontent.com/letsang/risk/master/graphics/rule1.png", width = "100%"),
+                  footer = actionButton("next","Next"),
+                  easyClose = FALSE)
+    )
   })
   
   ############################## QUIT GAME ##############################

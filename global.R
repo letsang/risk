@@ -55,6 +55,29 @@ map <- leaflet() %>%
 #   select(subregion, latitude, longitude) %>%
 #   mutate(player = "p3", regiment = sample(1:5,1)) #random value for test, to be replaced by reactive input
 
+  ############################## ATTACK/DEFENSE CASTING DIE ##############################
+castLot <- function(oponent,defender){
+  res <- logical()
+  i <- 1
+  if (length(defender) < length(oponent))
+  {
+    while (!is.na(defender[i]))
+    {
+      res[i] <- defender[i] < oponent[i]
+      i <- i + 1
+    }
+  }
+  else
+  {
+    while (!is.na(oponent[i]))
+    {
+      res[i] <- defender[i] < oponent[i]
+      i <- i + 1
+    }
+  }
+  return(res)
+}
+
   ############################## MARKER ICON ##############################
 
 flagIcon <- iconList(null = makeIcon("https://raw.githubusercontent.com/letsang/risk/master/graphics/null.png", iconWidth = 24, iconHeight =32),
